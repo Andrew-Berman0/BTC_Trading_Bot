@@ -1,0 +1,12 @@
+# Data
+alpaca-py>=0.13.0        # market data + paper trading execution
+pandas>=2.0.0
+numpy>=1.24.0
+pyarrow>=14.0.0          # parquet I/O
+
+# Features & ML
+scikit-learn>=1.3.0
+lightgbm>=4.1.0
+
+# Utilities
+python-dotenv>=1.0.0     # load .env for API keys

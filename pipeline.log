@@ -1,0 +1,49 @@
+13:02:30  INFO      run_pipeline: ============================================================
+13:02:30  INFO      run_pipeline: Crypto ML Trading Bot — Data Pipeline Demo
+13:02:30  INFO      run_pipeline: ============================================================
+13:02:30  INFO      run_pipeline: Fetching live data: BTC/USDT 1h
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 691, in fetch
+    response.raise_for_status()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 451 Client Error:  for url: https://api.binance.com/api/v3/exchangeInfo
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/run_pipeline.py", line 170, in <module>
+    main()
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/run_pipeline.py", line 87, in main
+    pipe = DataPipeline(
+           ^^^^^^^^^^^^^
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/data/pipeline.py", line 63, in __init__
+    self.fetcher = OHLCVFetcher(
+                   ^^^^^^^^^^^^^
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/data/fetcher.py", line 76, in __init__
+    self.exchange.load_markets()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 1825, in load_markets
+    markets = self.fetch_markets(params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/binance.py", line 3185, in fetch_markets
+    promisesRaw.append(self.publicGetExchangeInfo(params))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/types.py", line 35, in unbound_method
+    return _self.request(self.path, self.api, self.method, params, config=self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/binance.py", line 11653, in request
+    response = self.fetch2(path, api, method, params, headers, body, config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 5350, in fetch2
+    raise e
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 5340, in fetch2
+    return self.fetch(request['url'], request['method'], request['headers'], request['body'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 709, in fetch
+    self.handle_http_status_code(http_status_code, http_status_text, url, method, http_response)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ccxt/base/exchange.py", line 2002, in handle_http_status_code
+    raise ErrorClass(self.id + ' ' + method + ' ' + url + ' ' + codeAsString + ' ' + reason + ' ' + body)
+ccxt.base.errors.ExchangeNotAvailable: binance GET https://api.binance.com/api/v3/exchangeInfo 451  {
+  "code": 0,
+  "msg": "Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error."
+}

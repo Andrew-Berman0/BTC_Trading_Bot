@@ -1,0 +1,68 @@
+14:35:11  INFO      models.trainer: Model loaded ← /Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/models/saved/lgbm_model.pkl
+14:35:12  INFO      features.engineer: Dropped 101 warmup rows; 8,659 rows remaining
+14:35:12  INFO      features.engineer: Built 48 features on 8,659 rows
+14:35:12  INFO      features.engineer: Split: train=6,927 (2022-04-24→2025-06-21)  val=1,732 (2025-06-22→2026-04-06)
+14:35:12  INFO      bot: Model + scaler ready.
+14:35:12  INFO      broker.alpaca_broker: AlpacaBroker connected [PAPER]
+14:35:13  INFO      bot: Starting equity: $100,000.00
+14:35:13  INFO      bot: Next candle close in 5089s — sleeping...
+16:00:03  INFO      features.engineer: Dropped 101 warmup rows; 23 rows remaining
+16:00:03  INFO      features.engineer: Built 48 features on 23 rows
+16:00:03  INFO      bot: Signal: HOLD  confidence: 36.3%
+16:00:03  INFO      bot: No trade — signal matches current position or HOLD.
+16:00:03  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+16:00:03  INFO      bot: Next candle close in 14399s — sleeping...
+22:30:43  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+22:30:43  INFO      features.engineer: Built 48 features on 24 rows
+22:30:43  INFO      bot: Signal: HOLD  confidence: 38.1%
+22:30:43  INFO      bot: No trade — signal matches current position or HOLD.
+22:30:44  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+22:30:44  INFO      bot: Next candle close in 5358s — sleeping...
+00:00:02  INFO      features.engineer: Dropped 101 warmup rows; 23 rows remaining
+00:00:02  INFO      features.engineer: Built 48 features on 23 rows
+00:00:02  INFO      bot: Signal: HOLD  confidence: 38.1%
+00:00:02  INFO      bot: No trade — signal matches current position or HOLD.
+00:00:02  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+00:00:02  INFO      bot: Next candle close in 14399s — sleeping...
+04:31:26  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+04:31:26  INFO      features.engineer: Built 48 features on 24 rows
+04:31:27  INFO      bot: Signal: HOLD  confidence: 36.4%
+04:31:27  INFO      bot: No trade — signal matches current position or HOLD.
+04:31:27  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+04:31:27  INFO      bot: Next candle close in 12515s — sleeping...
+08:46:50  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+08:46:50  INFO      features.engineer: Built 48 features on 24 rows
+08:46:50  INFO      bot: Signal: HOLD  confidence: 42.4%
+08:46:50  INFO      bot: No trade — signal matches current position or HOLD.
+08:46:50  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+08:46:50  INFO      bot: Next candle close in 11592s — sleeping...
+12:23:12  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+12:23:12  INFO      features.engineer: Built 48 features on 24 rows
+12:23:12  INFO      bot: Signal: HOLD  confidence: 38.0%
+12:23:13  INFO      bot: No trade — signal matches current position or HOLD.
+12:23:13  INFO      bot: Equity: $100,000.00  Drawdown: +0.00%
+12:23:13  INFO      bot: Next candle close in 13009s — sleeping...
+22:13:04  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+22:13:04  INFO      features.engineer: Built 48 features on 24 rows
+22:13:04  INFO      bot: Signal: HOLD  confidence: 43.5%
+22:13:04  INFO      bot: No trade — signal matches current position or HOLD.
+22:13:04  INFO      bot: Equity: $100,029.67  Drawdown: +0.03%
+22:13:04  INFO      bot: Next candle close in 6418s — sleeping...
+00:04:01  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+00:04:01  INFO      features.engineer: Built 48 features on 24 rows
+00:04:01  INFO      bot: Signal: HOLD  confidence: 36.4%
+00:04:01  INFO      bot: No trade — signal matches current position or HOLD.
+00:04:01  INFO      bot: Equity: $100,025.56  Drawdown: +0.03%
+00:04:01  INFO      bot: Next candle close in 14161s — sleeping...
+04:00:02  INFO      features.engineer: Dropped 101 warmup rows; 23 rows remaining
+04:00:02  INFO      features.engineer: Built 48 features on 23 rows
+04:00:02  INFO      bot: Signal: HOLD  confidence: 36.4%
+04:00:02  INFO      bot: No trade — signal matches current position or HOLD.
+04:00:02  INFO      bot: Equity: $100,028.85  Drawdown: +0.03%
+04:00:02  INFO      bot: Next candle close in 14399s — sleeping...
+08:42:10  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+08:42:10  INFO      features.engineer: Built 48 features on 24 rows
+08:42:10  INFO      bot: Signal: HOLD  confidence: 38.5%
+08:42:10  INFO      bot: No trade — signal matches current position or HOLD.
+08:42:10  INFO      bot: Equity: $100,033.19  Drawdown: +0.03%
+08:42:10  INFO      bot: Next candle close in 11871s — sleeping...

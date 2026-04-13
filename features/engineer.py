@@ -42,6 +42,12 @@ def _get_funding_fetcher():
     from data.funding_fetcher import FundingRateFetcher
     return FundingRateFetcher()
 
+def _get_dominance_fetcher():
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from data.dominance_fetcher import DominanceFetcher
+    return DominanceFetcher()
+
 
 # ---------------------------------------------------------------------------
 # Main class
@@ -88,7 +94,8 @@ class FeatureEngineer:
         out = self._add_regime(out)
         out = self._add_time_features(out)
         out = self._add_fear_greed(out)
-        out = self._add_funding_rates(out)   # requires Hetzner/EU server for full history
+        out = self._add_funding_rates(out)
+        out = self._add_dominance(out)
         out = self._add_targets(out)
 
         # Drop warmup NaNs (longest indicator window is ~200 candles)
@@ -329,6 +336,22 @@ class FeatureEngineer:
             logger.info(f"Added {len(features.columns)} funding rate features")
         except Exception as e:
             logger.warning(f"Funding rate fetch failed, skipping: {e}")
+        return df
+
+    def _add_dominance(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Merge BTC/ETH ratio (dominance proxy) into the candle DataFrame.
+        Adds 6 features. Fails gracefully if Alpaca is unreachable.
+        """
+        try:
+            fetcher  = _get_dominance_fetcher()
+            raw      = fetcher.load_or_fetch()
+            features = fetcher.align_to_ohlcv(raw, df.index)
+            for col in features.columns:
+                df[col] = features[col]
+            logger.info(f"Added {len(features.columns)} BTC dominance features")
+        except Exception as e:
+            logger.warning(f"Dominance fetch failed, skipping: {e}")
         return df
 
     def _add_fear_greed(self, df: pd.DataFrame) -> pd.DataFrame:

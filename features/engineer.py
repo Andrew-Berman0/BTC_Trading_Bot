@@ -185,7 +185,6 @@ class FeatureEngineer:
         df["log_ret_4"]  = np.log(df["close"] / df["close"].shift(4))
         df["log_ret_24"] = np.log(df["close"] / df["close"].shift(24))
         df["hl_ratio"]   = (df["high"] - df["low"]) / df["close"]   # range / price
-        df["oc_ratio"]   = (df["close"] - df["open"]) / df["open"]  # candle body
         return df
 
     def _add_technical(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -194,29 +193,23 @@ class FeatureEngineer:
         l = df["low"]
         v = df["volume"]
 
-        # --- RSI (14) ---
-        delta  = c.diff()
-        gain   = delta.clip(lower=0).ewm(span=14, adjust=False).mean()
-        loss   = (-delta.clip(upper=0)).ewm(span=14, adjust=False).mean()
-        rs     = gain / loss.replace(0, np.nan)
-        df["rsi_14"] = 100 - (100 / (1 + rs))
-        df["rsi_7"]  = self._rsi(c, 7)
+        # --- RSI (7 only — rsi_14 was r=0.94 with bb_pct/rsi_7, redundant) ---
+        df["rsi_7"] = self._rsi(c, 7)
 
-        # --- MACD ---
-        ema12 = c.ewm(span=12, adjust=False).mean()
-        ema26 = c.ewm(span=26, adjust=False).mean()
-        macd  = ema12 - ema26
+        # --- MACD (histogram only — macd_cross had near-zero importance) ---
+        ema12  = c.ewm(span=12, adjust=False).mean()
+        ema26  = c.ewm(span=26, adjust=False).mean()
+        macd   = ema12 - ema26
         signal = macd.ewm(span=9, adjust=False).mean()
-        df["macd_hist"]  = macd - signal           # histogram
-        df["macd_cross"] = np.sign(df["macd_hist"]) != np.sign(df["macd_hist"].shift(1))
+        df["macd_hist"] = macd - signal
 
-        # --- Bollinger Bands (20, 2σ) ---
-        sma20   = c.rolling(20).mean()
-        std20   = c.rolling(20).std()
-        df["bb_upper"] = sma20 + 2 * std20
-        df["bb_lower"] = sma20 - 2 * std20
-        df["bb_pct"]   = (c - df["bb_lower"]) / (df["bb_upper"] - df["bb_lower"])
-        df["bb_width"]  = (df["bb_upper"] - df["bb_lower"]) / sma20  # volatility proxy
+        # --- Bollinger Bands (20, 2σ) — keep pct/width only, drop raw bands ---
+        sma20    = c.rolling(20).mean()
+        std20    = c.rolling(20).std()
+        bb_upper = sma20 + 2 * std20
+        bb_lower = sma20 - 2 * std20
+        df["bb_pct"]   = (c - bb_lower) / (bb_upper - bb_lower)
+        df["bb_width"] = (bb_upper - bb_lower) / sma20
 
         # --- ATR (14) ---
         tr = pd.concat([
@@ -224,23 +217,23 @@ class FeatureEngineer:
             (h - c.shift(1)).abs(),
             (l - c.shift(1)).abs(),
         ], axis=1).max(axis=1)
-        df["atr_14"]      = tr.ewm(span=14, adjust=False).mean()
-        df["atr_norm"]    = df["atr_14"] / c            # normalised
+        df["atr_14"]   = tr.ewm(span=14, adjust=False).mean()
+        df["atr_norm"] = df["atr_14"] / c
 
-        # --- EMAs & trend ---
-        df["ema_9"]  = c.ewm(span=9, adjust=False).mean()
-        df["ema_21"] = c.ewm(span=21, adjust=False).mean()
-        df["ema_50"] = c.ewm(span=50, adjust=False).mean()
-        df["ema_200"]= c.ewm(span=200, adjust=False).mean()
-        df["ema_9_21_diff"]   = (df["ema_9"]  - df["ema_21"]) / c
-        df["ema_21_50_diff"]  = (df["ema_21"] - df["ema_50"]) / c
-        df["ema_50_200_diff"] = (df["ema_50"] - df["ema_200"]) / c
+        # --- EMA diffs only — raw EMAs were r>0.99 with each other and vwap ---
+        ema_9  = c.ewm(span=9,   adjust=False).mean()
+        ema_21 = c.ewm(span=21,  adjust=False).mean()
+        ema_50 = c.ewm(span=50,  adjust=False).mean()
+        ema_200= c.ewm(span=200, adjust=False).mean()
+        df["ema_9_21_diff"]   = (ema_9  - ema_21)  / c
+        df["ema_21_50_diff"]  = (ema_21 - ema_50)  / c
+        df["ema_50_200_diff"] = (ema_50 - ema_200) / c
 
-        # --- Stochastic oscillator ---
+        # --- Stochastic (smoothed line only — stoch_k was r=0.92 with stoch_d) ---
         low_14  = l.rolling(14).min()
         high_14 = h.rolling(14).max()
-        df["stoch_k"] = 100 * (c - low_14) / (high_14 - low_14 + 1e-9)
-        df["stoch_d"] = df["stoch_k"].rolling(3).mean()
+        stoch_k = 100 * (c - low_14) / (high_14 - low_14 + 1e-9)
+        df["stoch_d"] = stoch_k.rolling(3).mean()
 
         return df
 
@@ -250,15 +243,16 @@ class FeatureEngineer:
         h = df["high"]
         l = df["low"]
 
-        # --- VWAP (rolling 24 candles) ---
-        typical = (h + l + c) / 3
-        df["vwap_24"]   = (typical * v).rolling(24).sum() / v.rolling(24).sum()
-        df["vwap_dev"]  = (c - df["vwap_24"]) / df["vwap_24"]   # deviation from VWAP
+        # --- VWAP deviation only — raw vwap_24 was r>0.999 with all EMAs ---
+        typical  = (h + l + c) / 3
+        vwap_24  = (typical * v).rolling(24).sum() / v.rolling(24).sum()
+        df["vwap_dev"] = (c - vwap_24) / vwap_24
 
         # --- Volume features ---
         df["vol_sma_20"]   = v.rolling(20).mean()
-        df["vol_ratio"]    = v / df["vol_sma_20"]                 # relative volume
-        df["vol_delta"]    = (v * np.sign(df["oc_ratio"]))        # signed volume
+        df["vol_ratio"]    = v / df["vol_sma_20"]
+        candle_sign        = np.sign(df["close"] - df["open"])    # replaces dropped oc_ratio
+        df["vol_delta"]    = v * candle_sign
         df["vol_delta_ma"] = df["vol_delta"].rolling(10).mean()
 
         # --- Amihud illiquidity (price impact per unit volume) ---
@@ -315,11 +309,6 @@ class FeatureEngineer:
         df["month_sin"] = np.sin(2 * np.pi * month / 12)
         df["month_cos"] = np.cos(2 * np.pi * month / 12)
 
-        # High-volume hours (UTC): Asia open ~1-3, EU ~7-9, US ~13-16
-        df["is_asia_open"] = ((hour >= 1) & (hour <= 3)).astype(int)
-        df["is_eu_open"]   = ((hour >= 7) & (hour <= 9)).astype(int)
-        df["is_us_open"]   = ((hour >= 13) & (hour <= 16)).astype(int)
-
         return df
 
     def _add_funding_rates(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -333,7 +322,12 @@ class FeatureEngineer:
             features = fetcher.align_to_ohlcv(raw, df.index)
             for col in features.columns:
                 df[col] = features[col]
-            logger.info(f"Added {len(features.columns)} funding rate features")
+            # funding_annualized is r=1.0 with funding_rate (just a rescaling)
+            # funding_extreme and funding_sign had near-zero importance
+            _drop = ["funding_annualized", "funding_extreme", "funding_sign"]
+            df.drop(columns=_drop, errors="ignore", inplace=True)
+            kept = [c for c in features.columns if c not in _drop]
+            logger.info(f"Added {len(kept)} funding rate features")
         except Exception as e:
             logger.warning(f"Funding rate fetch failed, skipping: {e}")
         return df
@@ -349,7 +343,12 @@ class FeatureEngineer:
             features = fetcher.align_to_ohlcv(raw, df.index)
             for col in features.columns:
                 df[col] = features[col]
-            logger.info(f"Added {len(features.columns)} BTC dominance features")
+            # btc_eth_ma_30 was r=0.998 with btc_eth_ma_7; btc_dominance_up had importance=17
+            # btc_eth_ratio was r=0.9995 with btc_eth_ma_7; ratio_norm + ma_7 cover the same info
+            _drop = ["btc_eth_ma_30", "btc_dominance_up", "btc_eth_ratio"]
+            df.drop(columns=_drop, errors="ignore", inplace=True)
+            kept = [c for c in features.columns if c not in _drop]
+            logger.info(f"Added {len(kept)} BTC dominance features")
         except Exception as e:
             logger.warning(f"Dominance fetch failed, skipping: {e}")
         return df
@@ -368,7 +367,12 @@ class FeatureEngineer:
             fng_features = fetcher.align_to_ohlcv(fng_raw, df.index)
             for col in fng_features.columns:
                 df[col] = fng_features[col]
-            logger.info(f"Added {len(fng_features.columns)} Fear & Greed features")
+            # fng_value is r=1.0 with fng_norm; fng_norm is r=0.99 with fng_ma_7 (lower importance)
+            # fng_extreme had importance=11
+            _drop = ["fng_value", "fng_norm", "fng_extreme"]
+            df.drop(columns=_drop, errors="ignore", inplace=True)
+            kept = [c for c in fng_features.columns if c not in _drop]
+            logger.info(f"Added {len(kept)} Fear & Greed features")
         except Exception as e:
             logger.warning(f"Fear & Greed fetch failed, skipping: {e}")
         return df

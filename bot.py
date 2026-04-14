@@ -273,22 +273,33 @@ def run_loop(trainer: ModelTrainer, eng: FeatureEngineer):
             # ---- 5. Execute ----
             position   = broker.get_position(SYMBOL)
             in_long    = position is not None and position["side"] == "long"
-            in_short   = position is not None and position["side"] == "short"
             trade_size = equity * CONFIG.risk.max_position_pct
 
+            # Clean up residual dust positions (< $20) that can result from
+            # partial fills or flatten/open races.
+            if position is not None and abs(position["market_value"]) < 20:
+                logger.warning(
+                    f"Residual position detected (${position['market_value']:,.2f}) — flattening dust."
+                )
+                broker.flatten(SYMBOL)
+                position, in_long = None, False
+
+            logger.info(
+                f"Position state: {'LONG' if in_long else 'FLAT'}"
+                + (f" ${position['market_value']:,.2f}" if position else "")
+            )
+
             if signal == 1 and not in_long:
-                if in_short:
-                    broker.flatten(SYMBOL)
                 broker.buy(SYMBOL, usd=trade_size)
 
-            elif signal == -1 and not in_short:
-                if in_long:
-                    broker.flatten(SYMBOL)
-                # Alpaca crypto supports short selling in paper mode
-                broker.sell(SYMBOL, usd=trade_size)
+            elif signal == -1 and in_long:
+                # SELL = exit long only, no shorting
+                broker.flatten(SYMBOL)
 
-            elif signal == 0 and confidence >= threshold and (in_long or in_short):
-                # Confident HOLD (above threshold) — model says sideways, exit position
+            elif signal == 0 and confidence >= 0.65 and in_long:
+                # High-confidence HOLD — model strongly predicts sideways, exit position.
+                # Uses a fixed floor (not the calibrated threshold) so this never fires
+                # when the calibrated threshold is 0.0.
                 logger.info(f"Confident HOLD ({confidence:.1%}) — closing position, going flat.")
                 broker.flatten(SYMBOL)
 

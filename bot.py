@@ -72,6 +72,8 @@ def load_state() -> datetime:
         with open(STATE_FILE) as f:
             data = json.load(f)
         ts = datetime.fromisoformat(data["last_retrain"])
+        if ts.tzinfo is None:
+            ts = ts.replace(tzinfo=timezone.utc)
         logger.info(f"Resumed from saved state — last retrain: {ts.date()}")
         return ts
     return datetime.fromtimestamp(0, tz=timezone.utc)
@@ -235,10 +237,11 @@ def run_loop(trainer: ModelTrainer, eng: FeatureEngineer):
             # ---- 3. Volatility circuit breaker ----
             # If current ATR is > 3x its 50-period median, the market is in
             # an extreme regime the model was not trained on. Force HOLD.
+            # Compare raw (unscaled) atr_norm values to avoid scaling artifacts.
             atr_col = "atr_norm" if "atr_norm" in X_live.columns else None
             if atr_col:
-                current_atr  = float(X_live[atr_col].iloc[-1])
                 featured_all = eng.build(raw_live)
+                current_atr  = float(featured_all[atr_col].iloc[-1])   # raw, unscaled
                 median_atr   = float(featured_all[atr_col].median())
                 if current_atr > 3 * median_atr:
                     logger.warning(
@@ -251,6 +254,12 @@ def run_loop(trainer: ModelTrainer, eng: FeatureEngineer):
                     signal, confidence = trainer.predict_signal(X_live, min_prob=threshold)
             else:
                 signal, confidence = trainer.predict_signal(X_live, min_prob=threshold)
+
+            # Log all three class probabilities for diagnostics
+            proba = trainer.predict_proba(X_live)[0]
+            logger.info(
+                f"Probabilities — SELL: {proba[0]:.1%}  HOLD: {proba[1]:.1%}  BUY: {proba[2]:.1%}"
+            )
             logger.info(f"Signal: {label_map[signal]:4s}  confidence: {confidence:.1%}")
 
             # ---- 4. Risk check: drawdown kill switch ----
@@ -264,21 +273,34 @@ def run_loop(trainer: ModelTrainer, eng: FeatureEngineer):
             # ---- 5. Execute ----
             position   = broker.get_position(SYMBOL)
             in_long    = position is not None and position["side"] == "long"
-            in_short   = position is not None and position["side"] == "short"
             trade_size = equity * CONFIG.risk.max_position_pct
 
+            # Clean up residual dust positions (< $20) that can result from
+            # partial fills or flatten/open races.
+            if position is not None and abs(position["market_value"]) < 20:
+                logger.warning(
+                    f"Residual position detected (${position['market_value']:,.2f}) — flattening dust."
+                )
+                broker.flatten(SYMBOL)
+                position, in_long = None, False
+
+            logger.info(
+                f"Position state: {'LONG' if in_long else 'FLAT'}"
+                + (f" ${position['market_value']:,.2f}" if position else "")
+            )
+
             if signal == 1 and not in_long:
-                if in_short:
-                    broker.flatten(SYMBOL)
                 broker.buy(SYMBOL, usd=trade_size)
 
-            elif signal == -1 and not in_short:
-                if in_long:
-                    broker.flatten(SYMBOL)
-                # Alpaca crypto supports short selling in paper mode
-                broker.sell(SYMBOL, usd=trade_size)
+            elif signal == -1 and in_long:
+                # SELL = exit long only, no shorting
+                broker.flatten(SYMBOL)
 
-            elif signal == 0 and (in_long or in_short):
+            elif signal == 0 and confidence >= 0.65 and in_long:
+                # High-confidence HOLD — model strongly predicts sideways, exit position.
+                # Uses a fixed floor (not the calibrated threshold) so this never fires
+                # when the calibrated threshold is 0.0.
+                logger.info(f"Confident HOLD ({confidence:.1%}) — closing position, going flat.")
                 broker.flatten(SYMBOL)
 
             else:

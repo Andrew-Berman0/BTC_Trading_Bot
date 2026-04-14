@@ -148,7 +148,7 @@ class ModelTrainer:
         confidence = float(proba[best_idx])
         signal     = LABEL_MAP_INV[best_idx]
 
-        if confidence < min_prob:
+        if min_prob > 0.0 and confidence < min_prob:
             return 0, confidence
         return signal, confidence
 
@@ -159,16 +159,21 @@ class ModelTrainer:
         min_trades: int = 30,
     ) -> tuple[float, float]:
         """
-        Grid-search confidence thresholds [0.40 … 0.85] on the val set.
+        Grid-search confidence thresholds on the val set.
         Returns (best_threshold, best_sharpe).
-        Only considers thresholds that produce at least min_trades signals
-        to avoid overfitting to tiny samples.
+
+        Includes threshold=0 (trade every signal, no filtering) as a
+        candidate so that if filtering never helps, we fall back cleanly
+        rather than forcing a threshold that hurts performance.
         """
-        proba  = self.predict_proba(X_val)                    # (n, 3)
-        best_threshold = 0.60
+        proba      = self.predict_proba(X_val)
+        best_threshold = 0.0
         best_sharpe    = float("-inf")
 
-        for threshold in np.arange(0.40, 0.86, 0.05):
+        # 0.0 = no filtering (trade every argmax signal)
+        thresholds = [0.0] + list(np.arange(0.50, 0.86, 0.05))
+
+        for threshold in thresholds:
             max_proba  = proba.max(axis=1)
             best_class = proba.argmax(axis=1)
             signals    = np.where(max_proba >= threshold,
@@ -258,24 +263,29 @@ class ModelTrainer:
     def _simulate_sharpe(y_true: pd.Series, y_pred: pd.Series,
                          annualize: float = np.sqrt(6 * 365)) -> float:
         """
-        Simulate strategy returns on the val set and compute annualized Sharpe.
+        Simulate long-only strategy returns on the val set and compute annualized Sharpe.
 
-        Logic:
-          - BUY  signal (+1) → long  → return = +actual_return
-          - SELL signal (-1) → short → return = -actual_return
-          - HOLD signal ( 0) → flat  → return = 0
+        Matches live bot behaviour — no shorting:
+          - BUY  (+1) → enter long (if flat)
+          - SELL (-1) → exit long (if in position), otherwise do nothing
+          - HOLD ( 0) → keep current state
 
-        y_true contains the actual direction labels (-1/0/1), which are derived
-        from forward returns in the engineer. We use them as a return proxy
-        (sign × threshold = approximate realized return).
+        Returns are accumulated only while in a long position.
         """
-        # Use label as a return proxy: each label represents a ~0.5% move
-        actual_returns = y_true.values * 0.005
-        positions      = y_pred.values
-        strategy_rets  = positions * actual_returns
+        actual_returns = y_true.values * 0.005   # ~0.5% per label as return proxy
+        signals        = y_pred.values
 
-        # Only evaluate on candles where model took a position
-        active = strategy_rets[positions != 0]
+        strategy_rets = []
+        in_long = False
+        for sig, ret in zip(signals, actual_returns):
+            if sig == 1:
+                in_long = True
+            elif sig == -1:
+                in_long = False
+            if in_long:
+                strategy_rets.append(ret)
+
+        active = np.array(strategy_rets)
         if len(active) < 10:
             return 0.0
 

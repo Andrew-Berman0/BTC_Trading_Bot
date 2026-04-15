@@ -64,15 +64,17 @@ class ModelTrainer:
         y_v  = y_val.map(LABEL_MAP)
 
         self.model = lgb.LGBMClassifier(
-            n_estimators=2000,
-            learning_rate=0.05,
-            max_depth=6,
-            num_leaves=31,
-            min_child_samples=50,
-            subsample=0.8,
-            colsample_bytree=0.8,
+            n_estimators=2000,          # capped by early stopping
+            learning_rate=0.011,        # tuned: slower learning generalises better
+            max_depth=6,                # tuned: confirmed optimal
+            num_leaves=67,              # tuned
+            min_child_samples=139,      # tuned: higher = less overfit on small leaves
+            subsample=0.999,            # tuned
+            colsample_bytree=0.650,     # tuned
+            min_gain_to_split=0.056,    # tuned
+            reg_alpha=0.010,            # tuned: L1 regularisation
+            reg_lambda=0.896,           # tuned: L2 regularisation
             class_weight="balanced",
-            min_gain_to_split=0.01,
             random_state=42,
             n_jobs=-1,
             verbose=-1,

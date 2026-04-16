@@ -167,9 +167,11 @@ class FeatureEngineer:
         """
         Build features on a live candle window and scale with the
         already-fitted scaler. Returns the last row as a 1-row DataFrame.
+        Stores the full unscaled featured DataFrame as self.last_featured
+        so the ATR circuit breaker can reuse it without rebuilding.
         """
-        featured = self.build(df)
-        X = featured[self.feature_cols].tail(1)
+        self.last_featured = self.build(df)
+        X = self.last_featured[self.feature_cols].tail(1)
         return pd.DataFrame(
             self.scaler.transform(X),
             columns=X.columns,

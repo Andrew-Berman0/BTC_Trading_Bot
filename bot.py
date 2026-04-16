@@ -237,12 +237,11 @@ def run_loop(trainer: ModelTrainer, eng: FeatureEngineer):
             # ---- 3. Volatility circuit breaker ----
             # If current ATR is > 3x its 50-period median, the market is in
             # an extreme regime the model was not trained on. Force HOLD.
-            # Compare raw (unscaled) atr_norm values to avoid scaling artifacts.
-            atr_col = "atr_norm" if "atr_norm" in X_live.columns else None
+            # Reuses eng.last_featured (set by transform_live) — no second build.
+            atr_col = "atr_norm" if "atr_norm" in eng.last_featured.columns else None
             if atr_col:
-                featured_all = eng.build(raw_live)
-                current_atr  = float(featured_all[atr_col].iloc[-1])   # raw, unscaled
-                median_atr   = float(featured_all[atr_col].median())
+                current_atr = float(eng.last_featured[atr_col].iloc[-1])
+                median_atr  = float(eng.last_featured[atr_col].median())
                 if current_atr > 3 * median_atr:
                     logger.warning(
                         f"VOLATILITY CIRCUIT BREAKER — ATR {current_atr:.4f} is "

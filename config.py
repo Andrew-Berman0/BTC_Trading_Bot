@@ -18,7 +18,7 @@ class DataConfig:
     days_back:   int   = 1825      # 5 years for initial training
     val_frac:    float = 0.2
     forward_n:   int   = 2         # predict next 8h (2 candles ahead)
-    threshold:   float = 0.010     # 1.0% minimum move to call BUY/SELL
+    threshold:   float = 0.005     # 0.5% minimum move to call BUY/SELL
 
 
 @dataclass

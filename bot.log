@@ -258,3 +258,207 @@
 20:44:33  INFO      bot: No trade — signal matches current position or HOLD.
 20:44:33  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
 20:44:33  INFO      bot: Next candle close in 11729s — sleeping...
+03:22:50  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+03:22:50  INFO      features.engineer: Built 48 features on 24 rows
+03:22:50  INFO      bot: Signal: HOLD  confidence: 35.7%
+03:22:51  INFO      bot: No trade — signal matches current position or HOLD.
+03:22:51  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+03:22:51  INFO      bot: Next candle close in 2231s — sleeping...
+04:34:29  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+04:34:29  INFO      features.engineer: Built 48 features on 24 rows
+04:34:29  INFO      bot: Signal: HOLD  confidence: 37.4%
+04:34:29  INFO      bot: No trade — signal matches current position or HOLD.
+04:34:29  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+04:34:29  INFO      bot: Next candle close in 12332s — sleeping...
+08:32:15  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+08:32:15  INFO      features.engineer: Built 48 features on 24 rows
+08:32:15  INFO      bot: Signal: HOLD  confidence: 40.1%
+08:32:15  INFO      bot: No trade — signal matches current position or HOLD.
+08:32:15  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+08:32:15  INFO      bot: Next candle close in 12466s — sleeping...
+12:13:45  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+12:13:45  INFO      features.engineer: Built 48 features on 24 rows
+12:13:45  INFO      bot: Signal: HOLD  confidence: 42.8%
+12:13:46  INFO      bot: No trade — signal matches current position or HOLD.
+12:13:46  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+12:13:46  INFO      bot: Next candle close in 13576s — sleeping...
+16:00:03  INFO      features.engineer: Dropped 101 warmup rows; 23 rows remaining
+16:00:03  INFO      features.engineer: Built 48 features on 23 rows
+16:00:03  INFO      bot: Signal: HOLD  confidence: 42.8%
+16:00:04  INFO      bot: No trade — signal matches current position or HOLD.
+16:00:04  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+16:00:04  INFO      bot: Next candle close in 14398s — sleeping...
+02:28:56  INFO      features.engineer: Dropped 101 warmup rows; 24 rows remaining
+02:28:56  INFO      features.engineer: Built 48 features on 24 rows
+02:28:56  INFO      bot: Signal: HOLD  confidence: 37.4%
+02:28:56  INFO      bot: No trade — signal matches current position or HOLD.
+02:28:56  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+02:28:56  INFO      bot: Next candle close in 5466s — sleeping...
+04:00:02  INFO      features.engineer: Dropped 101 warmup rows; 23 rows remaining
+04:00:02  INFO      features.engineer: Built 48 features on 23 rows
+04:00:02  INFO      bot: Signal: HOLD  confidence: 37.4%
+04:00:02  INFO      bot: No trade — signal matches current position or HOLD.
+04:00:02  INFO      bot: Equity: $100,050.38  Drawdown: +0.05%
+04:00:02  INFO      bot: Next candle close in 14399s — sleeping...
+08:20:54  ERROR     bot: Loop error: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T16%3A19%3A54.269802%2B00%3A00&end=2026-04-17T12%3A19%3A54.269802%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x14f4a9f10>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x14f4a9f10>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T16%3A19%3A54.269802%2B00%3A00&end=2026-04-17T12%3A19%3A54.269802%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x14f4a9f10>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/bot.py", line 139, in run_loop
+    except Exception as e:
+                       ^^^^
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/data/alpaca_fetcher.py", line 88, in fetch_latest
+    bars = self.client.get_crypto_bars(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/data/historical/crypto.py", line 94, in get_crypto_bars
+    raw_bars = self._get_marketdata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 393, in _get_marketdata
+    response = self.get(path=path, data=params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 225, in get
+    return self._request("GET", path, data, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 131, in _request
+    return self._one_request(method, url, opts, retry)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 195, in _one_request
+    response = self._session.request(method, url, **opts)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T16%3A19%3A54.269802%2B00%3A00&end=2026-04-17T12%3A19%3A54.269802%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x14f4a9f10>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+08:20:54  INFO      bot: Sleeping 60s before retry...
+08:21:54  INFO      bot: Next candle close in 13088s — sleeping...
+12:07:19  ERROR     bot: Loop error: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T20%3A06%3A19.706879%2B00%3A00&end=2026-04-17T16%3A06%3A19.706879%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x150061a90>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 753, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x150061a90>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T20%3A06%3A19.706879%2B00%3A00&end=2026-04-17T16%3A06%3A19.706879%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x150061a90>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/bot.py", line 139, in run_loop
+    except Exception as e:
+                       ^^^^
+  File "/Users/andrewberman/Desktop/Comp Sci/Personal/TradingBot/data/alpaca_fetcher.py", line 88, in fetch_latest
+    bars = self.client.get_crypto_bars(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/data/historical/crypto.py", line 94, in get_crypto_bars
+    raw_bars = self._get_marketdata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 393, in _get_marketdata
+    response = self.get(path=path, data=params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 225, in get
+    return self._request("GET", path, data, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 131, in _request
+    return self._one_request(method, url, opts, retry)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/alpaca/common/rest.py", line 195, in _one_request
+    response = self._session.request(method, url, **opts)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v1beta3/crypto/us/bars?start=2026-03-27T20%3A06%3A19.706879%2B00%3A00&end=2026-04-17T16%3A06%3A19.706879%2B00%3A00&timeframe=4Hour&symbols=BTC%2FUSD&limit=10000 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x150061a90>: Failed to resolve 'data.alpaca.markets' ([Errno 8] nodename nor servname provided, or not known)"))
+12:07:19  INFO      bot: Sleeping 60s before retry...
+12:08:19  INFO      bot: Next candle close in 13902s — sleeping...
